@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 
 const rstream = fs.ReadStream(
@@ -8,4 +8,4 @@ const rstream = fs.ReadStream(
 rstream.on('readable', function(){
   const dataontxt = rstream.read();
   if(dataontxt) console.log(dataontxt.toString());
-})
+});
