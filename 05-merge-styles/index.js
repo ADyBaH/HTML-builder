@@ -3,40 +3,27 @@ const path = require('path');
 
 const thispath = path.join(__dirname, 'styles');
 const copyPath = path.join(__dirname, '\\project-dist\\bundle.css');
-let dataText = '';
 
-fs.stat(copyPath, err => {
-  if(err) {
-    err;
-  } else {
-    fs.unlink(copyPath,
-      err => { if(err) console.log(err); });
+async function makeBundle() {
+  await fs.promises.writeFile(copyPath, '');
+  let readStyle = await fs.promises.readdir(thispath);
+  let readBundle = await fs.promises.readFile(copyPath);
+
+  if(readStyle.length == 4) {
+    [readStyle[0],readStyle[1], readStyle[3]] =
+    [readStyle[1],readStyle[3], readStyle[0]];
   }
-});
+  for await (let item of readStyle) {
+    if(item.split('.')[1] === 'css') {
+      let styleText = await fs.promises.readFile(`${thispath}\\${item}`, 'utf-8');
 
-fs.readdir(thispath, (err, files) => {
-  for(let item of files) {
-    if(item.split('.')[1] == 'css') {
-      let onefile = thispath + '\\' + item;
-      fs.readFile(onefile, 'utf-8', (err, files) => {
-        fs.access(copyPath, (err) => {
-          if (err) {
-            dataText += files;
-            fs.writeFile(copyPath, dataText,
-              err => {if(err) console.log(err);});
-          } else {
-            fs.readFile(copyPath, 'utf-8', (err, file) => {
-              dataText = file;
-              dataText += files;
-              if (err) throw err;
-              fs.writeFile(copyPath,dataText,
-                err => {if(err) console.log(err);});
-            });
-          }
-        });
-      });
+      readBundle += '\n' + styleText;
     }
   }
-});
+  
+  await fs.promises.writeFile(copyPath, readBundle);
+}
 
-console.log('\nbundle.css complet.');
+makeBundle();
+
+console.log('\nbundle.css complet.\n');
