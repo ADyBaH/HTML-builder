@@ -6,6 +6,11 @@ const pathFile = path.join(__dirname, 'text.txt');
 let dataText = '';
 
 stdout.write('Привет, пиши сюда:\n');
+
+fs.writeFile(pathFile, '', err => {
+  if(err) console.log(err);
+});
+
 stdin.on('data', data => {
   if (data.toString() === 'exit\r\n') {
     console.log('Покеда.');
